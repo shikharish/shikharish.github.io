@@ -1,0 +1,32 @@
+base_url = "https://shikharish.github.io"
+title = "Shikhar Soni"
+build_search_index = true
+generate_feed = true
+minify_html = true
+
+theme = "apollo"
+
+[markdown]
+highlight_code = true
+highlight_theme = "ayu-dark"
+
+[extra]
+use_cdn = false
+theme="dark"
+mathjax = true
+mathjax_dollar_inline_enable = true
+
+menu = [
+    { name= "/About", url= "/about", weight= 1 },
+    { name = "/Posts", url= "/posts", weight= 1 },
+]
+
+socials = [
+    { name= "github", url= "https://github.com/shikharish/", icon = "github" },
+    { name= "instagram", url= "https://twitter.com/shikharish__", icon= "instagram" },
+    { name= "twitter", url= "https://twitter.com/shikharish", icon= "twitter" },
+]
+
+# [extra.analytics]
+# enabled = true
+# goatcounter_user = "Shikhar Soni"
