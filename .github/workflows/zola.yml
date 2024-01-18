@@ -2,7 +2,7 @@ name: Zola
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 # Allow one concurrent deployment
