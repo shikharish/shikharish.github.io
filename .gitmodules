@@ -3,4 +3,4 @@
 	url = https://github.com/janbaudisch/zola-sam.git
 [submodule "themes/apollo"]
 	path = themes/apollo
-	url = https://github.com/not-matthias/apollo
+	url = https://github.com/shikharish/apollo
