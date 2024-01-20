@@ -1,6 +1,6 @@
 base_url = "https://shikharish.github.io"
 title = "Shikhar Soni"
-build_search_index = true
+build_search_index = false
 generate_feed = true
 minify_html = true
 
