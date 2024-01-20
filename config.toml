@@ -12,7 +12,7 @@ highlight_theme = "ayu-dark"
 
 [extra]
 use_cdn = false
-theme="toggle"
+theme="dark"
 mathjax = true
 mathjax_dollar_inline_enable = true
 
@@ -20,7 +20,6 @@ menu = [
     { name= "/About", url= "/about", weight= 1 },
     { name = "/Blog", url= "/blog", weight= 1 },
     { name = "/Gallery", url= "/gallery", weight= 1 },
-    { name = "/Posters", url= "/posters", weight= 1 },
 ]
 
 socials = [
