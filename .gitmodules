@@ -1,6 +1,0 @@
-[submodule "themes/sam"]
-	path = themes/sam
-	url = https://github.com/janbaudisch/zola-sam.git
-[submodule "themes/apollo"]
-	path = themes/apollo
-	url = https://github.com/shikharish/apollo
