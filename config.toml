@@ -6,6 +6,8 @@ minify_html = true
 
 theme = "apollo"
 
+ignored_content = ["*.sh"]
+
 [markdown]
 highlight_code = true
 highlight_theme = "ayu-dark"
