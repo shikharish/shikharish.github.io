@@ -25,7 +25,8 @@ menu = [
 ]
 
 socials = [
+    { name= "email", url= "mailto:shikharish05@gmail.com", icon = "email" },
     { name= "github", url= "https://github.com/shikharish/", icon = "github" },
-    { name= "instagram", url= "https://instagram.com/shikharish__", icon= "instagram" },
+    { name= "instagram", url= "https://instagram.com/shikharish.raw", icon= "instagram" },
     { name= "twitter", url= "https://twitter.com/shikharish", icon= "twitter" },
 ]
