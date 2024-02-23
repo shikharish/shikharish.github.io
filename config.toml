@@ -20,6 +20,7 @@ mathjax_dollar_inline_enable = true
 
 menu = [
     { name= "/About", url= "/about", weight= 1 },
+    { name= "/Now", url= "/now", weight= 1 },
     { name = "/Blog", url= "/blog", weight= 1 },
     { name = "/Gallery", url= "/gallery", weight= 1 },
 ]
