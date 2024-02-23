@@ -17,6 +17,7 @@ use_cdn = false
 theme="dark"
 mathjax = true
 mathjax_dollar_inline_enable = true
+favicon="/favicon.ico"
 
 menu = [
     { name= "/About", url= "/about", weight= 1 },
