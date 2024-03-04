@@ -5,11 +5,9 @@ path = "now"
 
 >(This is a [now](https://nownownow.com/about) page. Basically what I have been up to lately.)
 
-- My mid semester exams just got over and have planned a lot of things for the coming months.
-- Had applied for LFX Mentorship. Chances of selections are slim. Would get to know in about a week.
-- Recently worked on [IQPS](https://github.com/metakgp/iqps) with seniors at MetaKGP. We released the beta version because mid-sem exams were near, but a lot of work still needs to be done.
+- Got selected for the LFX Mentorship! Got my first mentor meet tomorrow. Very excited to get started.
 - Currently reading [The Secret History](https://www.goodreads.com/book/show/13054604-the-secret-history).
 
 ---
 
->*Last updated on 23rd February, 2024*
+>*Last updated on 3rd March, 2024*
