@@ -5,9 +5,11 @@ path = "now"
 
 >(This is a [now](https://nownownow.com/about) page. Basically what I have been up to lately.)
 
-- Got selected for the LFX Mentorship! Got my first mentor meet tomorrow. Very excited to get started.
-- Currently reading [The Secret History](https://www.goodreads.com/book/show/13054604-the-secret-history).
+- Writing a blog on Go coverage and profiling. Will update soon.
+- Digging into the codebase of [pgmoneta](https://github.com/pgmoneta/pgmoneta/). Most probably will apply for the project in GSoC.
+- Trying to reduce noise, focusing on the things that matter and aiming for simplicity.    
+- Currently reading [Piranesi](https://www.goodreads.com/book/show/50202953-piranesi).
 
 ---
 
->*Last updated on 3rd March, 2024*
+>*Last updated on 13th March, 2024*
