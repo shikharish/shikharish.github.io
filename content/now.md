@@ -12,4 +12,10 @@ path = "now"
 
 ---
 
+**Photograph of the week** 
+
+<img class="photo-grid-image" src="../gallery/DSC_0731.jpg" />
+
+---
+
 >*Last updated on 13th March, 2024*
