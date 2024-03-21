@@ -32,3 +32,9 @@ socials = [
     { name= "instagram", url= "https://instagram.com/shikharish.raw", icon= "instagram" },
     { name= "twitter", url= "https://twitter.com/shikharish", icon= "twitter" },
 ]
+
+[extra.analytics]
+enabled = true
+
+[extra.analytics.goatcounter]
+user = "shikharish"
