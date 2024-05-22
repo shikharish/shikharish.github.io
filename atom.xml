@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Shikhar Soni</title>
+    <link rel="self" type="application/atom+xml" href="https://shikharish.github.io/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://shikharish.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-01-18T00:00:00+00:00</updated>
+    <id>https://shikharish.github.io/atom.xml</id>
+    <entry xml:lang="en">
+        <title>About Me</title>
+        <published>2024-01-18T00:00:00+00:00</published>
+        <updated>2024-01-18T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://shikharish.github.io/about/"/>
+        <id>https://shikharish.github.io/about/</id>
+        
+        <content type="html" xml:base="https://shikharish.github.io/about/">&lt;p&gt;Hello there!&lt;&#x2F;p&gt;
+&lt;p&gt;I am Shikhar Soni, a first year Computer Science and Engineering undergraduate student at IIT Kharagpur. Computers, coding, open-source, and anything tech-related excites me. I am fascinated by the idealogy of open-source and have been trying to contribute to some projects. I am an active member of &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&quot;&gt;MetaKGP&lt;&#x2F;a&gt;, an open community of students working on useful projects to solve day-to-day problems faced by KGPians.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;&amp;quot;Simplicity is the ultimate sophistication.&amp;quot;&lt;&#x2F;em&gt;&lt;&#x2F;strong&gt; - Leonardo da Vinci&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;&amp;quot;In character, in manner, in style, in all things, the supreme excellence is simplicity.&amp;quot;&lt;&#x2F;em&gt;&lt;&#x2F;strong&gt; - Henry Wadsworth Longfellow&lt;&#x2F;p&gt;
+&lt;p&gt;These quotes have been the driving force of my life lately. While writing code or solving a physics problem, I actively try to make the solution as simple as possible. And it often pays off, giving extra time to work that out. That is why I enjoy writing in Go so much, with its focus on simplicity.&lt;&#x2F;p&gt;
+&lt;p&gt;Outside the world of syntax and logic, I like to take photographs. I find calm in visiting places, taking pictures, and capturing moments. I am also a member of &lt;a href=&quot;https:&#x2F;&#x2F;www.instagram.com&#x2F;tfps.iitkgp&#x2F;&quot;&gt;TFPS&lt;&#x2F;a&gt;, the film-making and photography society of IIT-KGP and have met some amazing photographers here. Check out some of my pictures in the &lt;a href=&quot;https:&#x2F;&#x2F;shikharish.github.io&#x2F;gallery&quot;&gt;gallery&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;P.S., Creating and maintaining this site is one of my resolutions for 2024. I hope it works well :)&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>KWoC 2023 Report</title>
+        <published>2024-01-18T00:00:00+00:00</published>
+        <updated>2024-01-18T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://shikharish.github.io/blog/kwoc-2023/"/>
+        <id>https://shikharish.github.io/blog/kwoc-2023/</id>
+        
+        <content type="html" xml:base="https://shikharish.github.io/blog/kwoc-2023/">&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Spending winter making meaningful contributions&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;github.com&#x2F;shikharish&#x2F;shikharish.github.io&#x2F;assets&#x2F;139053348&#x2F;786cbea1-2a57-440d-82f9-5ba1a7ef8291&quot; alt=&quot;kwoc-poster&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The &lt;strong&gt;Kharagpur Winter of Code&lt;&#x2F;strong&gt;, often abbreviated as &lt;strong&gt;KWoC&lt;&#x2F;strong&gt;, is an annual five week long program where students new or unknown to free and open-source software contribute to coding projects registered in the program by experienced mentors or project owners and gain experience in contributing to open source software. The program is hosted by Kharagpur Open Source Society, an independent student group at IIT Kharagpur, but is open to students of any university. &lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;- From the &lt;a href=&quot;https:&#x2F;&#x2F;wiki.metakgp.org&#x2F;w&#x2F;Kharagpur_Winter_of_Code&quot;&gt;MetaKGP Wiki&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;about-me&quot;&gt;About Me&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;em&gt;(and why I chose to participate in KWoC 2023)&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I am Shikhar Soni, a first year Computer Science and Engineering undergraduate student at IIT Kharagpur. I like to code things that hold meaning to me and impact the communities I care about. The open-source ideology of collaborating with people fascinates me. I am an active member of &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&quot;&gt;MetaKGP&lt;&#x2F;a&gt;, an open community of students working on useful projects for IIT-KGP students. KWoC was an ideal opportunity to connect with like-minded people, make contributions and improve my skills. Also, the format of KWoC is inspired by GSoC, which I aim for. Other than programming, I like to take &lt;a href=&quot;https:&#x2F;&#x2F;shikharish.github.io&#x2F;gallery&quot;&gt;photographs&lt;&#x2F;a&gt; and design posters.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;projects&quot;&gt;Projects&lt;&#x2F;h2&gt;
+&lt;p&gt;While selecting projects, I looked out for the ones written in Go, because I really enjoy writing in it, and some from MetaKGP, because I care deeply about them. In total, I contributed to three projects: MetaKGP-Wiki, KWoC-Backend and Chillzone.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;metakgp-wiki&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&quot;&gt;MetaKGP-Wiki&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;MetaKGP-Wiki is the community wiki of IIT Kharagpur that anyone can edit. The Github repository contains the dockerized source code of the wiki, built on Mediawiki. It is very useful for finding all kinds of info about IIT-KGP.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;PRs merged:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&#x2F;pull&#x2F;116&quot;&gt;#116&lt;&#x2F;a&gt;: Fixed backup to Dropbox script.&lt;&#x2F;strong&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;The backup script was not running due to Dropbox API changes. This involved checking the API documentation, writing the new script(Python) and updating a few environmental variables.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&#x2F;pull&#x2F;117&quot;&gt;#117&lt;&#x2F;a&gt;: Enabled error logging for MySQL container.&lt;&#x2F;strong&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;I had to read MySQL docker documentation and make few changes to the configuration file.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&#x2F;pull&#x2F;121&quot;&gt;#121&lt;&#x2F;a&gt;: Add environmental variables in README.&lt;&#x2F;strong&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;Wrote documentation for environmental variables which are needed to properly set up the wiki.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;kwoc-backend&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kossiitkgp&#x2F;KWoC-Backend&#x2F;&quot;&gt;KWoC-Backend&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The backend of &lt;a href=&quot;https:&#x2F;&#x2F;kwoc.kossiitkgp.org&#x2F;&quot;&gt;KWoC website&lt;&#x2F;a&gt;, written in Go.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;PRs merged:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kossiitkgp&#x2F;KWoC-Backend&#x2F;pull&#x2F;186&quot;&gt;#186&lt;&#x2F;a&gt;: Migrated from SQLite to Postgres in local development.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Having no prior knowledge of Postgres and Docker, I saw this as a good learning opportunity. Initially, it was unclear what tasks needed to be done to migrate to Postgres. I had to figure things out as I made progress.&lt;&#x2F;p&gt;
+&lt;p&gt;I discovered the best way to set up Postgres was to use a Docker container. I followed &lt;a href=&quot;https:&#x2F;&#x2F;container.training&#x2F;intro-selfpaced.yml.html&quot;&gt;these&lt;&#x2F;a&gt; slides, referred to the official &lt;a href=&quot;https:&#x2F;&#x2F;docs.docker.com&#x2F;&quot;&gt;documentation&lt;&#x2F;a&gt; to learn the basics of Docker, and wrote a docker-compose file. I had to change a few environmental variables for the ORM to connect to the database.&lt;&#x2F;p&gt;
+&lt;p&gt;Some tests were failing after using Postgres. I learned this was due to Foreign Key Constraints in SQL. The fix was ensuring keys were also added whenever a table in the database was populated. I also moved all tests to a separate directory for better structure. I also had to update the Github Actions workflow which ran tests.&lt;&#x2F;p&gt;
+&lt;p&gt;All changes also required some documentation changes(like env variables, db setup instructions) in README.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;kossiitkgp&#x2F;KWoC-Backend&#x2F;pull&#x2F;192&quot;&gt;#192&lt;&#x2F;a&gt;: Fixed swaggo documentation workflow.&lt;&#x2F;strong&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;The Github Actions workflow which built API documentation was failing. Finding the source of the problem took some trial and error because the errors were not clear. At the end, the fix was simple and short.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;chillzone&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;chillzone&quot;&gt;Chillzone&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Another project of MetaKGP, it finds empty classrooms during class hours for students to chill. This project is exclusively for KGPians. It is one of projects which I personally find very useful in my daily life.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;PRs merged:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;chillzone&#x2F;pull&#x2F;62&quot;&gt;#62&lt;&#x2F;a&gt;: Update for Spring 2024 semester.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Updated timetable data for Spring 2024 semester. Also improved logic of matching slots from IIT-KGP ERP.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;chillzone&#x2F;pull&#x2F;57&quot;&gt;#57&lt;&#x2F;a&gt;: Integrate with ERP login package Go.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Note: This PR was made on Dec 5, 2023, a few days before coding period started.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Earlier, to update data, cookies from ERP had to be manually added. This PR integrated chillzone to use &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;iitkgp-erp-login-go&quot;&gt;ERP login package&lt;&#x2F;a&gt;, which handles ERP login functionality.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;beyond-and-before-kwoc&quot;&gt;Beyond(and before) KWoC&lt;&#x2F;h2&gt;
+&lt;p&gt;I was familiar with some of these projects before KWoC and had contributed to them. Working on them in KWoC improved my understanding of the projects. I could not complete &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&#x2F;issues&#x2F;114&quot;&gt;these&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;metakgp&#x2F;metakgp-wiki&#x2F;issues&#x2F;112&quot;&gt;two&lt;&#x2F;a&gt; issues in MetaKGP-Wiki and currently working on them. I have also had discussions with my mentors on how we can improve many aspects of the KWoC-Backend. KWoC was a boost to my open-source journey; I have only started and have a long long way to go. And I am really excited for future experiences like this.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;acknowledgement&quot;&gt;Acknowledgement&lt;&#x2F;h2&gt;
+&lt;p&gt;I express my sincere gratitude to &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;harshkhandeparkar&quot;&gt;Harsh Khandeparkar&lt;&#x2F;a&gt;, who guided me throughout the program as my mentor. Thank you for the quick replies to my queries and for the acknowledgments you gave me. Looking forward to working more on MetaKGP-Wiki and KWoC-Backend. I also thank &lt;a href=&quot;https:&#x2F;&#x2F;www.chiragghosh.dev&#x2F;&quot;&gt;Chirag Ghosh&lt;&#x2F;a&gt;, for giving me a chance to work on Chillzone and ERP login package.&lt;&#x2F;p&gt;
+&lt;p&gt;A big thanks to the &lt;a href=&quot;https:&#x2F;&#x2F;kossiitkgp.org&#x2F;&quot;&gt;KOSS&lt;&#x2F;a&gt; team for organizing this program. Looking forward to more events by KOSS :)&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
