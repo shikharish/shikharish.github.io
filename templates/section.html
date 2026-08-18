@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+
+{% block content %}
+  <header class="page-header">
+    <p class="eyebrow">Section</p>
+    <h1>{{ section.title }}</h1>
+  </header>
+
+  {% if section.content %}
+    <div class="prose section-content">{{ section.content | safe }}</div>
+  {% endif %}
+
+  {% if paginator %}
+    {% set posts = paginator.pages %}
+  {% else %}
+    {% set posts = section.pages %}
+  {% endif %}
+
+  <ul class="archive-list">
+    {% for post in posts %}
+      <li>
+        {% if post.date %}
+          <time datetime="{{ post.date }}">{{ post.date | date(format="%B %Y") }}</time>
+        {% else %}
+          <span></span>
+        {% endif %}
+        <a href="{{ post.permalink }}">{{ post.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if paginator and (paginator.previous or paginator.next) %}
+    <nav class="pagination" aria-label="Pagination">
+      {% if paginator.previous %}
+        <a href="{{ paginator.previous }}">newer</a>
+      {% endif %}
+      {% if paginator.next %}
+        <a href="{{ paginator.next }}">older</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="intro" aria-labelledby="intro-title">
+    <p class="eyebrow">Personal site</p>
+    <h1 id="intro-title">{{ config.title }}</h1>
+    <div class="intro-copy">
+      {{ section.content | safe }}
+    </div>
+  </section>
+
+  {% set writing = get_section(path="blog/_index.md") %}
+  <section class="home-section" aria-labelledby="blog-title">
+    <div class="section-heading">
+      <h2 id="blog-title">Blog</h2>
+      <a href="{{ writing.permalink }}">all posts</a>
+    </div>
+
+    <ul class="archive-list">
+      {% for post in writing.pages %}
+        <li>
+          <time datetime="{{ post.date }}">{{ post.date | date(format="%B %Y") }}</time>
+          <a href="{{ post.permalink }}">{{ post.title }}</a>
+        </li>
+      {% else %}
+        <li class="empty-item">Nothing here yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="home-section" aria-labelledby="elsewhere-title">
+    <div class="section-heading">
+      <h2 id="elsewhere-title">Elsewhere</h2>
+    </div>
+    <p class="plain-links">
+      <a href="{{ get_url(path='@/about.md') }}">about</a>
+      <a href="{{ get_url(path='@/now.md') }}">now</a>
+      <a href="{{ get_url(path='@/gallery/_index.md') }}">photographs</a>
+    </p>
+  </section>
+{% endblock content %}

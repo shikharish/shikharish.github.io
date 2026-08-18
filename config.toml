@@ -1,40 +1,22 @@
 base_url = "https://shikharish.github.io"
 title = "Shikhar Soni"
 build_search_index = false
-generate_feed = true
+generate_feeds = true
 minify_html = true
 
-theme = "apollo"
-
-ignored_content = ["*.sh"]
-
-[markdown]
-highlight_code = true
-highlight_theme = "ayu-dark"
-
 [extra]
-use_cdn = false
-theme="dark"
-mathjax = true
-mathjax_dollar_inline_enable = true
-favicon="/favicon.ico"
+description = "The personal website of Shikhar Soni."
 
 menu = [
-    { name= "/About", url= "/about", weight= 1 },
-    { name= "/Now", url= "/now", weight= 1 },
-    { name = "/Blog", url= "/blog", weight= 1 },
-    { name = "/Gallery", url= "/gallery", weight= 1 },
+    { name = "About", url = "@/about.md", weight = 1 },
+    { name = "Now", url = "@/now.md", weight = 2 },
+    { name = "Blog", url = "@/blog/_index.md", weight = 3 },
+    { name = "Gallery", url = "@/gallery/_index.md", weight = 4 },
 ]
 
 socials = [
-    { name= "email", url= "mailto:shikharish05@gmail.com", icon = "email" },
-    { name= "github", url= "https://github.com/shikharish/", icon = "github" },
-    { name= "instagram", url= "https://instagram.com/shikharish.raw", icon= "instagram" },
-    { name= "twitter", url= "https://twitter.com/shikharish", icon= "twitter" },
+    { name = "email", url = "mailto:shikharish05@gmail.com" },
+    { name = "github", url = "https://github.com/shikharish/" },
+    { name = "instagram", url = "https://instagram.com/shikharish.raw" },
+    { name = "twitter", url = "https://twitter.com/shikharish" },
 ]
-
-[extra.analytics]
-enabled = true
-
-[extra.analytics.goatcounter]
-user = "shikharish"

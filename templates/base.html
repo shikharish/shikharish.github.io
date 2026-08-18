@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ config.extra.description }}">
+    <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
+    <link rel="icon" href="{{ get_url(path='favicon.svg') }}" type="image/svg+xml">
+    {% block head %}{% endblock head %}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="site-title" href="{{ get_url(path='@/_index.md') }}">{{ config.title }}</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          {% for item in config.extra.menu %}
+            <a href="{{ get_url(path=item.url) }}">{{ item.name }}</a>
+          {% endfor %}
+        </nav>
+      </header>
+
+      <main id="main-content">
+        {% block content %}{% endblock content %}
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-links">
+          {% for social in config.extra.socials %}
+            <a href="{{ social.url }}">{{ social.name }}</a>
+          {% endfor %}
+          {% if config.generate_feeds %}
+            <a href="{{ get_url(path='atom.xml') }}">rss</a>
+          {% endif %}
+        </div>
+        <span>{{ config.title }}</span>
+      </footer>
+    </div>
+  </body>
+</html>

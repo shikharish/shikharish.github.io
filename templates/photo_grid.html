@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+
+{% block content %}
+  <header class="page-header">
+    <p class="eyebrow">Images</p>
+    <h1>{{ section.title }}</h1>
+  </header>
+
+  <div class="gallery-grid">
+    {% for asset in section.assets %}
+      <figure class="gallery-item">
+        <img src="{{ get_url(path=asset) }}" alt="Photograph {{ loop.index }}" loading="lazy">
+      </figure>
+    {% endfor %}
+  </div>
+{% endblock content %}
