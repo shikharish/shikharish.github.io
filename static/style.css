@@ -69,6 +69,10 @@ a:focus {
   white-space: nowrap;
 }
 
+.article-date {
+  font-style: italic;
+}
+
 .pagination {
   margin-top: 1.5em;
 }

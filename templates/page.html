@@ -6,7 +6,7 @@
   <article class="article">
     <h1>{{ page.title }}</h1>
     {% if page.date %}
-      <p><time datetime="{{ page.date }}">{{ page.date | date(format="%m/%d/%Y") }}</time></p>
+      <p class="article-date"><time datetime="{{ page.date }}">{{ page.date | date(format="%m/%d/%Y") }}</time></p>
     {% endif %}
 
     <div class="prose">
