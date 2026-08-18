@@ -7,6 +7,7 @@ minify_html = true
 [extra]
 description = "The personal website of Shikhar Soni."
 email = "shikharsoni05@gmail.com"
+linkedin = "https://www.linkedin.com/in/shikharish/"
 
 menu = [
     { name = "about", url = "@/about.md", weight = 1 },
