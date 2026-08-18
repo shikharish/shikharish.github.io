@@ -11,31 +11,18 @@
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <div class="site-shell">
-      <header class="site-header">
-        <a class="site-title" href="{{ get_url(path='@/_index.md') }}">{{ config.title }}</a>
-        <nav class="site-nav" aria-label="Primary navigation">
-          {% for item in config.extra.menu %}
-            <a href="{{ get_url(path=item.url) }}">{{ item.name }}</a>
-          {% endfor %}
-        </nav>
-      </header>
+    <header class="site-header">
+      <a class="site-title" href="{{ get_url(path='@/_index.md') }}">{{ config.title }}</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        {% for item in config.extra.menu %}
+          <a href="{{ get_url(path=item.url) }}">{{ item.name }}</a>
+        {% endfor %}
+      </nav>
+      <a class="site-email" href="mailto:{{ config.extra.email }}">email</a>
+    </header>
 
-      <main id="main-content">
-        {% block content %}{% endblock content %}
-      </main>
-
-      <footer class="site-footer">
-        <div class="footer-links">
-          {% for social in config.extra.socials %}
-            <a href="{{ social.url }}">{{ social.name }}</a>
-          {% endfor %}
-          {% if config.generate_feeds %}
-            <a href="{{ get_url(path='atom.xml') }}">rss</a>
-          {% endif %}
-        </div>
-        <span>{{ config.title }}</span>
-      </footer>
-    </div>
+    <main id="main-content">
+      {% block content %}{% endblock content %}
+    </main>
   </body>
 </html>

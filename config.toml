@@ -6,16 +6,16 @@ minify_html = true
 
 [extra]
 description = "The personal website of Shikhar Soni."
+email = "shikharsoni05@gmail.com"
 
 menu = [
-    { name = "About", url = "@/about.md", weight = 1 },
-    { name = "Now", url = "@/now.md", weight = 2 },
-    { name = "Blog", url = "@/blog/_index.md", weight = 3 },
-    { name = "Gallery", url = "@/gallery/_index.md", weight = 4 },
+    { name = "about", url = "@/about.md", weight = 1 },
+    { name = "now", url = "@/now.md", weight = 2 },
+    { name = "blog", url = "@/blog/_index.md", weight = 3 },
 ]
 
 socials = [
-    { name = "email", url = "mailto:shikharish05@gmail.com" },
+    { name = "email", url = "mailto:shikharsoni05@gmail.com" },
     { name = "github", url = "https://github.com/shikharish/" },
     { name = "instagram", url = "https://instagram.com/shikharish.raw" },
     { name = "twitter", url = "https://twitter.com/shikharish" },

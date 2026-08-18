@@ -4,12 +4,10 @@
 
 {% block content %}
   <article class="article">
-    <header class="page-header article-header">
-      {% if page.date %}
-        <p class="eyebrow"><time datetime="{{ page.date }}">{{ page.date | date(format="%B %Y") }}</time></p>
-      {% endif %}
-      <h1>{{ page.title }}</h1>
-    </header>
+    <h1>{{ page.title }}</h1>
+    {% if page.date %}
+      <p><time datetime="{{ page.date }}">{{ page.date | date(format="%m/%d/%Y") }}</time></p>
+    {% endif %}
 
     <div class="prose">
       {{ page.content | safe }}

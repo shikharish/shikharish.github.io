@@ -3,33 +3,26 @@
 {% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
 
 {% block content %}
-  <header class="page-header">
-    <p class="eyebrow">Section</p>
-    <h1>{{ section.title }}</h1>
-  </header>
-
-  {% if section.content %}
-    <div class="prose section-content">{{ section.content | safe }}</div>
-  {% endif %}
-
   {% if paginator %}
     {% set posts = paginator.pages %}
   {% else %}
     {% set posts = section.pages %}
   {% endif %}
 
-  <ul class="archive-list">
+  <table class="post-list" aria-label="{{ section.title }} posts">
+    <tbody>
     {% for post in posts %}
-      <li>
-        {% if post.date %}
-          <time datetime="{{ post.date }}">{{ post.date | date(format="%B %Y") }}</time>
-        {% else %}
-          <span></span>
-        {% endif %}
-        <a href="{{ post.permalink }}">{{ post.title }}</a>
-      </li>
+      <tr>
+        <td class="post-date">
+          {% if post.date %}<time datetime="{{ post.date }}">{{ post.date | date(format="%m/%y") }}</time>{% endif %}
+        </td>
+        <td><a href="{{ post.permalink }}">{{ post.title }}</a></td>
+      </tr>
+    {% else %}
+      <tr><td>Nothing here yet.</td></tr>
     {% endfor %}
-  </ul>
+    </tbody>
+  </table>
 
   {% if paginator and (paginator.previous or paginator.next) %}
     <nav class="pagination" aria-label="Pagination">
