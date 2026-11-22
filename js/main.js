@@ -370,7 +370,8 @@ function frame(now) {
   if (G.hover && now - G.lastMove > 450 && !G.stirring) G.still += dt; else if (!G.hover) G.still = 0;
   if (G.still > 0.3 || (G.still > 0.05 && G.T <= FLOOR + 0.02)) G.sharp = true;
   if (G.armed && !G.stirring && !G.auto && G.pending < 0 && G.T >= 0.9) { G.pending = (G.cur + 1) % NC; loadPic(reel[G.pending]); }
-  if (reduce) G.T = 0;
+  if (G.wait) G.T = reduce ? 0 : 1;   // no clip yet: static
+  else if (reduce) G.T = 0;
   else if (G.pending >= 0) {
     if (G.pp == null) { G.pp = 0; G.po0 = G.T; }   // eased: the static rises gently, speeds up, then settles at full
     G.pp = Math.min(1, G.pp + dt / OUT); G.T = G.po0 + (1 - G.po0) * smooth(0, 1, G.pp);
@@ -545,11 +546,14 @@ function frame(now) {
   }
 }
 
-for (let k = 1; !(await loadPic(reel[G.cur])) && k < NC; k++) G.cur = (G.cur + 1) % NC;   // first clip that loads
+// the page starts drawing at once; the plate stays static (G.wait) until the first clip that loads can show
+G.wait = true;
+const firstClip = (async () => { for (let k = 1; !(await loadPic(reel[G.cur])) && k < NC; k++) G.cur = (G.cur + 1) % NC; })();
 showQuote(Q.cur); showClip();
 if (solo) { G.T = 0.6; G.sharp = true; }
 if (!R) {
   root.classList.add('no-gl'); root.classList.remove('boot', 'veil');
+  await firstClip; G.wait = false; showClip();
   await document.fonts.ready; fitQuote(); startMedia(G.cur); flatDraw();
 } else {
   // while the GPU context is gone the drawn words would be invisible (html.gl hides the DOM text): show the DOM text
@@ -561,9 +565,12 @@ if (!R) {
   px = Infinity; sizeCanvas(); cursorGrid(); sizeForms();
   TXT.forEach((_, k) => rasterTxt(k));
   R.cursor(C.u8, C.w, C.h);
-  if (reduce) G.T = 0;
-  startMedia(G.cur);
-  for (const d of [1, -1]) loadPic(reel[(G.cur + d + NC) % NC]);
+  firstClip.then(() => {
+    G.wait = false; showClip(); drawPic();   // its first frame onto the plate (the first try may have skipped a clip that failed)
+    if (reduce) G.T = 0;
+    startMedia(G.cur);
+    for (const d of [1, -1]) loadPic(reel[(G.cur + d + NC) % NC]);
+  });
   document.addEventListener('visibilitychange', () => { const M = media.get(reel[G.cur]); if (M?.video && document.hidden) M.el.pause(); });
   last = performance.now();
   frame(last);

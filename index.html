@@ -25,6 +25,9 @@ body::after { content: ''; position: fixed; inset: 0; z-index: 100; pointer-even
 html.veil body::after { opacity: 1; visibility: visible; transition: none; }   /* it fades out over the GPU's own static */
 </style>
 <link rel="stylesheet" href="style.css">
+<link rel="modulepreload" href="js/main.js"><link rel="modulepreload" href="js/gl.js"><link rel="modulepreload" href="js/text.js">
+<link rel="modulepreload" href="js/media.js"><link rel="modulepreload" href="js/q/lib.js">
+<link rel="preload" href="data/quotes.json" as="fetch" crossorigin><link rel="preload" href="js/q/manifest.json" as="fetch" crossorigin>
 <script>
 // type options: ?type=c (Instrument Serif + Geist + Geist Mono, the default) | a (EB Garamond + Geist Mono) | b (Newsreader alone)
 // quote face with type a: ?qf=1 (Cormorant Garamond) | 2 (Newsreader Display italic) | 3 (Fraunces Display)

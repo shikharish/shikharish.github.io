@@ -20,8 +20,9 @@ function hostEl() {
 }
 
 // resolves to { el, w, h, video, last } once the first frame can be shown, or null (missing / unplayable).
-// A clip may take as long as it needs to download (slow phones); timeoutMs only guards the decoding after that.
-export function loadMedia(m, timeoutMs = 8000) {
+// The clip streams (the server answers range requests; the files keep their index at the front), so its first frame
+// shows after the first few hundred kB, not after the whole file.
+export function loadMedia(m, timeoutMs = 20000) {
   return new Promise((res) => {
     let done = false;
     const end = (v) => { if (!done) { done = true; res(v); } };
@@ -32,20 +33,17 @@ export function loadMedia(m, timeoutMs = 8000) {
       el.width = el.height = 1;
       const ext = el.canPlayType('video/mp4; codecs="avc1.64001f"') ? 'mp4' : 'webm';
       const fail = (why) => { if (done) return; console.error(`video ${m.src}: ${why}`); releaseMedia({ el, video: true }); end(null); };
-      el.addEventListener('loadeddata', () => end({ el, w: el.videoWidth, h: el.videoHeight, video: true, last: -1 }), { once: true });
+      el.addEventListener('loadeddata', () => end({ el, w: el.videoWidth, h: el.videoHeight, video: true, last: -1, lastUp: -9 }), { once: true });
       el.addEventListener('error', () => fail('cannot play'), { once: true });
-      // whole clip into memory first (≤ 2.5 MB): looping and seeking then work even on servers without range requests
-      fetch(`${m.src}.${ext}`).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status)))).then((b) => {
-        el.src = URL.createObjectURL(b);
-        hostEl().append(el);
-        el.load();
-        setTimeout(() => fail('no frame in time'), timeoutMs);
-      }).catch((e) => fail(e.message));
+      el.src = `${m.src}.${ext}`;
+      hostEl().append(el);
+      el.load();
+      setTimeout(() => fail('no frame in time'), timeoutMs);
     } else {
       setTimeout(() => end(null), timeoutMs);
       const el = new Image();
       el.decoding = 'async';
-      el.onload = () => end({ el, w: el.naturalWidth, h: el.naturalHeight, video: false, last: -1 });
+      el.onload = () => end({ el, w: el.naturalWidth, h: el.naturalHeight, video: false, last: -1, lastUp: -9 });
       el.onerror = () => { console.error(`image ${m.src}: cannot load`); end(null); };
       el.src = `${m.src}.jpg`;
     }
