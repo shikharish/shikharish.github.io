@@ -23,8 +23,7 @@
 (() => {
   const d = document.documentElement, p = new URLSearchParams(location.search), t = p.get('type'), qf = p.get('qf');
   d.classList.add('js');
-  if (/^[abc]$/.test(t)) d.dataset.type = t;
-  if (d.dataset.type === 'a' && /^[23]$/.test(qf)) d.dataset.qf = qf;
+  if (/^[abc]$/.test(t)) d.dataset.type = t;  if (d.dataset.type === 'a' && /^[23]$/.test(qf)) d.dataset.qf = qf;
   const qface = { 1: 'cormorant-garamond-wght', 2: 'newsreader-display-italic-wght', 3: 'fraunces-display-wght' }[d.dataset.qf || 1];
   const fonts = { a: [qface, 'eb-garamond-wght', 'eb-garamond-italic-wght', 'geist-mono-wght'], b: ['newsreader-wght', 'newsreader-italic-wght'], c: ['instrument-serif', 'instrument-serif-italic', 'geist-wght', 'geist-mono-wght'] }[d.dataset.type];
   for (const f of fonts) { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'font'; l.type = 'font/woff2'; l.crossOrigin = ''; l.href = `fonts/${f}.woff2`; document.head.append(l); }
@@ -44,7 +43,7 @@
 
 <main class="stage">
   <section class="intro">
-    <p class="intro-label">India<span data-clock></span></p>
+    <p class="intro-label">Kharagpur, India<span data-clock></span></p>
     <p class="lede">Hey there, I am Shikhar Soni, a CS undergrad at IIT Kharagpur, India. Building systems till singularity.</p>
     <p class="hint"><span class="mouse">Drag or scrub across the picture to change it.</span><span class="touch">Swipe or rub the picture to change it.</span></p>  </section>
 

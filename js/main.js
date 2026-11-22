@@ -82,7 +82,7 @@ const descOf = (c) => ready.get(reel[c])?.desc ?? 'a picture still to come.';
 function setCaption(s) {   // "Title · date · place": the title and the details are set in different styles
   const k = s.indexOf(' · ');
   capT.textContent = k < 0 ? s : s.slice(0, k);
-  capD.textContent = k < 0 ? '' : ` · ${s.slice(k + 3)}`;
+  capD.textContent = k < 0 ? '' : s.slice(k + 3);   // date and place go on their own line under the title
 }
 
 // the quote is the largest text on the page; a long one steps down until it fits its room,
