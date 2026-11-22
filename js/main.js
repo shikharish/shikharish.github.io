@@ -67,12 +67,10 @@ const Q = {
 };
 
 /* ---------- DOM ---------- */
-const plateEl = $('[data-plate]'), capEl = $('[data-cap]'), stepOut = $('[data-step]');
+const plateEl = $('[data-plate]'), capEl = $('[data-cap]');
 const capT = $('[data-cap-t]'), capD = $('[data-cap-d]');
 const qBox = $('[data-q-box]'), qText = $('[data-q-text]'), qBy = $('[data-q-by]');
 const qCol = $('.quotes');
-const howBtn = $('.howq'), howEl = $('#how');
-howBtn.addEventListener('click', () => { const open = howEl.hidden; howEl.hidden = !open; howBtn.setAttribute('aria-expanded', String(open)); });
 // keyboard focus in the centre column pauses the reel
 addEventListener('focusin', (e) => {
   const el = e.target;
@@ -320,7 +318,7 @@ function flatDraw() {
 }
 
 /* ---------- per frame ---------- */
-let time = 0, last = performance.now(), lost = false, shownStep = '';
+let time = 0, last = performance.now(), lost = false;
 const frameLog = [];
 const sp = new Float32Array(MAX_SP * 4), spt = new Float32Array(MAX_SP), ipA = new Float32Array(MAX_IP * 4), ipT = new Float32Array(MAX_IP);
 function rectOf(el) { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }
@@ -480,8 +478,6 @@ function frame(now) {
     })(),
   });
 
-  const st = solo ? `${med ? 'upload' : 'draw'} ${G.drawMs.toFixed(1)} ms` : `step ${Math.round(T * 1000)}`;
-  if (st !== shownStep) { shownStep = st; stepOut.textContent = st; }
 
   // keep it smooth on slow GPUs: drop the drawing resolution once if frames are long
   if (frameLog.length === 120 && time > 3 && px > pxBase * 0.55) {
