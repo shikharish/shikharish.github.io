@@ -122,7 +122,7 @@ ${slots((i) => `  if (uTOn${i} > 0.5) textSlot(uTx${i}, uTR${i}, uTT${i}, uTL${i
   uvec2 g = uvec2(gl_FragCoord.xy);
   // the grain morphs smoothly from one random pattern to the next (uNoiseRate patterns a second): both the noise and
   // the print screen blend between their two nearest patterns, so nothing ever snaps from one frame to the next
-  float ft = uTime * uNoiseRate; float k = floor(ft); float f = ft - k; f = f * f * (3.0 - 2.0 * f);
+  float ft = uTime * uNoiseRate; float k = floor(ft); float f = ft - k;   // linear: the grain changes at an even pace (an eased blend pulsed)
   float nrm = inversesqrt((1.0 - f) * (1.0 - f) + f * f);   // keeps the blend as strong as one pattern
   uint ki = uint(k);
   float e = mix(gauss(g, ki), gauss(g, ki + 1u), f) * nrm;

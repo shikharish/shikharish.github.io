@@ -347,6 +347,8 @@ function flatDraw() {
 
 /* ---------- per frame ---------- */
 let time = 0, last = performance.now(), lost = false;
+const fpsEl = params.has('fps') ? document.body.appendChild(Object.assign(document.createElement('div'), { style: 'position:fixed;left:8px;bottom:8px;z-index:200;font:12px monospace;color:#e8e4da;background:#000a;padding:2px 6px' })) : null;
+const fpsAcc = []; let fpsAt = 0;
 const frameLog = [];
 const sp = new Float32Array(MAX_SP * 4), spt = new Float32Array(MAX_SP), ipA = new Float32Array(MAX_IP * 4), ipT = new Float32Array(MAX_IP);
 function rectOf(el) { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }
@@ -538,6 +540,11 @@ function frame(now) {
 
 
   if (veil && ++veil > 2) { root.classList.remove('veil'); veil = 0; }   // the GPU's own static is on screen now
+
+  if (fpsEl) {   // ?fps: frame rate and the slowest frame of the last second, to check smoothness on a real screen
+    fpsAcc.push(dt * 1000);
+    if (now - fpsAt > 1000) { fpsEl.textContent = `${fpsAcc.length} fps · slowest ${Math.max(...fpsAcc).toFixed(0)} ms · ${canvas.width}×${canvas.height}`; fpsAcc.length = 0; fpsAt = now; }
+  }
 
   // keep it smooth on slow GPUs: drop the drawing resolution once if frames are long
   if (frameLog.length === 120 && time > 3 && px > pxBase * 0.55) {
