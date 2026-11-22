@@ -50,15 +50,22 @@ html:not(.gl) #world { display: none; }
    --tone tells js/text.js how bright to draw a part (1 = ink) */
 html.gl .ink, html.gl .ink * { color: transparent; }
 
-.top { position: relative; z-index: 2; display: flex; justify-content: flex-end; align-items: baseline; gap: 12px 28px; flex-wrap: wrap; padding: 18px var(--pad) 0; color: var(--dim); }
-.contact { display: flex; gap: 6px 22px; flex-wrap: wrap; }
+/* the top line and the footer use the stage's three columns, so their ends line up with the intro and the quote */
+.top, .foot { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, .8fr) var(--pl) minmax(0, 1.2fr); column-gap: calc(var(--pl) * 0.1); padding: 18px var(--pad) 0; color: var(--dim); }
+.contact { grid-column: 3; justify-self: start; width: min(100%, calc(var(--s-q) * var(--q-width))); display: flex; justify-content: flex-end; gap: 6px 22px; flex-wrap: wrap; }
+.foot { padding: 0 var(--pad) 28px; }
+.foot p { grid-column: 1; justify-self: end; width: min(100%, calc(var(--s-lede) * 17)); margin: 0; white-space: nowrap; font-size: var(--s-label); letter-spacing: var(--ls-label); text-transform: var(--tt-label); }
 
 /* three columns hung from the plate's top edge: the quote (the largest words) gets the wider side column,
    the intro the narrower one; the intro's first line and the quote's first line start level */
 .stage { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.2fr); align-items: start; align-content: center; column-gap: calc(var(--pl) * 0.1); padding: 8px var(--pad) 20px; min-height: calc(100svh - 52px); }
 
 /* left: who I am (smaller and quieter than the quote) */
-.intro { justify-self: end; width: min(100%, calc(var(--s-lede) * 17)); margin-top: calc(var(--hl) + var(--hgap)); }
+.intro { justify-self: end; width: min(100%, calc(var(--s-lede) * 17)); }
+/* its label mirrors "Quotes I believe in", so the three columns start level with the plate's top edge */
+.intro-label { font: 400 var(--s-qlabel)/var(--hl) var(--label); height: var(--hl); margin: 0 0 var(--hgap); letter-spacing: var(--ls-label); text-transform: var(--tt-label); color: var(--dim); white-space: nowrap; }
+.intro .hint { transition: opacity 1.4s ease .3s; }
+html.used .intro .hint { opacity: 0; }   /* the "drag / swipe" hint goes once the picture has been touched */
 .lede { font: var(--w-lede) var(--s-lede)/var(--lh-lede) var(--voice); color: var(--c-lede); margin: 0 0 .9em; text-wrap: balance; }
 .hint { color: var(--dim); margin: 0; max-width: 30em; text-wrap: balance; }
 .hint .touch { display: none; }
@@ -118,6 +125,10 @@ html.no-gl .flat { display: block; }
   :root { --fs: 13px; --lede: 17px; --pl: calc(100vw - 2 * var(--pad)); --pad: 18px; --ls-label: .1em; --s-lede: 16px; --s-q: calc(var(--lede) * var(--qr) * 0.85); }
   [data-type="b"] { --ls-label: 0; --s-label: calc(var(--fs) * 1.06); }
   .stage { display: block; padding-top: 18px; }
+  .top { display: flex; justify-content: flex-end; }
+  .contact { width: auto; }
+  .foot { display: block; padding-top: 8px; }
+  .foot p { width: auto; justify-self: start; white-space: normal; }
   .intro { width: auto; margin-top: 0; }
   .lede { margin-bottom: .6em; }
   .hint { margin-bottom: 20px; text-wrap: balance; }

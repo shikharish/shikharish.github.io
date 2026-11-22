@@ -6,7 +6,16 @@
 <title>Shikhar Soni</title>
 <meta name="description" content="Hey there, I am Shikhar Soni, a CS undergrad at IIT Kharagpur, India. Building systems till singularity.">
 <meta name="theme-color" content="#0b0b12">
-<link rel="icon" href="data:,">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://shikharish.github.io/">
+<meta property="og:title" content="Shikhar Soni">
+<meta property="og:description" content="A CS undergrad at IIT Kharagpur, India. Building systems till singularity.">
+<meta property="og:image" content="https://shikharish.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="style.css">
 <script>
 // type options: ?type=c (Instrument Serif + Geist + Geist Mono, the default) | a (EB Garamond + Geist Mono) | b (Newsreader alone)
@@ -35,6 +44,7 @@
 
 <main class="stage">
   <section class="intro">
+    <p class="intro-label">India<span data-clock></span></p>
     <p class="lede">Hey there, I am Shikhar Soni, a CS undergrad at IIT Kharagpur, India. Building systems till singularity.</p>
     <p class="hint"><span class="mouse">Drag or scrub across the picture to change it.</span><span class="touch">Swipe or rub the picture to change it.</span></p>  </section>
 
@@ -49,6 +59,17 @@
   </aside>
 </main>
 
+<footer class="foot"><p>Built with my agent system · <a href="https://github.com/shikharish/shikharish.github.io">source</a></p></footer>
+
 <script type="module">import(new URLSearchParams(location.search).has('sheet') ? './js/sheet.js' : './js/main.js');</script>
+<script>
+// the small clock above the intro: his time (IST), ticking
+(() => {
+  const el = document.querySelector('[data-clock]');
+  const f = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' });
+  const tick = () => { el.textContent = ` · ${f.format(new Date())} IST`; };
+  tick(); setInterval(tick, 10000);
+})();
+</script>
 </body>
 </html>

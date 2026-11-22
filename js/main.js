@@ -236,7 +236,7 @@ function onMove(x, y, pressed, now) {
         if (over && (pressed || scrubbing) && G.pending < 0 && !G.lock) {
           const want = d / plateR.w * (pressed ? 0.85 : 0.45) * Math.min(2, v / 900 + 0.4);
           G.T = Math.min(1, G.T + Math.min(want, STIR_RATE * (now - lastP[2]) / 1000));
-          G.lastStir = now / 1000; G.stirring = true; G.sharp = false; G.auto = null;
+          G.lastStir = now / 1000; G.stirring = true; G.sharp = false; G.auto = null; root.classList.add('used');
           if (G.T >= 0.9) G.armed = true;
         }
       }
@@ -264,7 +264,7 @@ plateEl.addEventListener('touchend', (e) => {
   if (swipe && t) {
     const dx = t.clientX - swipe[0], dy = t.clientY - swipe[1];
     if (performance.now() - swipe[2] < 600 && Math.abs(dx) > 48 && Math.abs(dx) > 1.6 * Math.abs(dy)) {
-      G.armed = false; G.auto = null; G.hold = performance.now() / 1000 + HOLD_AFTER_NAV;
+      G.armed = false; G.auto = null; G.hold = performance.now() / 1000 + HOLD_AFTER_NAV; root.classList.add('used');
       goClip((G.pending >= 0 ? G.pending : G.cur) + (dx < 0 ? 1 : -1));
     }
   }
