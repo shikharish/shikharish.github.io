@@ -53,5 +53,13 @@ export function rasterText(el, cv, sc, maxSide) {
       ctx.restore();
     }
   }
+  // links: their underline (bright while hovered or focused), where the CSS border would be
+  for (const a of el.querySelectorAll('a')) {
+    const r = a.getBoundingClientRect();
+    if (!r.width) continue;
+    const v = Math.round(255 * (a.matches(':hover, :focus-visible') ? 0.95 : 0.3));
+    ctx.fillStyle = `rgb(${v},${v},${v})`;
+    ctx.fillRect((r.left - box.left) * sc, (r.bottom - box.top) * sc - Math.max(1, sc), r.width * sc, Math.max(1, sc));
+  }
   return { sc, w: box.width, h: box.height, maxLod: Math.floor(Math.log2(Math.max(w, h))) };
 }

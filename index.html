@@ -16,6 +16,14 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<style>
+/* the very first paint already has the page's own faint grain (not a flat black page), until the GPU has drawn its first frames (js/main.js removes .veil; the head script's timer is a safety net) */
+html.veil { background: #0b0b12; }
+body::after { content: ''; position: fixed; inset: 0; z-index: 100; pointer-events: none; background: #0b0b12 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAAJUExURQwMEz8+QUlISn253sMAAAAHdElNRQfqCxYSLTKO9tdnAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI2LTExLTIyVDE4OjI0OjU5KzAwOjAw1IdS3wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNi0xMS0yMlQxODoyNDo1OSswMDowMKXa6mMAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjYtMTEtMjJUMTg6NDU6NTArMDA6MDBgIC8SAAACq0lEQVR42u2d23KEMAxDa/7/ozvtQ2fpEEiCL5Lt87bcIilOYNlCv77iEZ9mjmifEyxHsZ+ddepyv+LfaoXOcSqjPDwG9ruB9rB5Pt5oCxl/DOl7zwllySDlSHBJc6kR7Bgt1DGcIt2QpcXb27mIPnEs73HTkJtN7NG4j9KY04vHP+i9FieCy1oz93YHru0md/jThmUdRNXY8dDwZ6cUGwfX0FSp1qlVhh+6IhprGCosVqOcJKhoUTb0/nBdBUUQ3xS1TuaON9yNgBOUQOmV6uN5k4+NluuTM5w8+i0Ml8sEAI7M4b+LcjDV2bK4faNI1A+z97dC6/B2osEJcNfJ9M94Mr+zEjK1qCiVk5CbT6jIq9XGreuBf+VmHsUpgoDitL3VpHlwjpELiu1I6675BCMNeVqKIbMpSsryQ/rdMWXA2lw+P6F01BgvNMj2SgenjlnifwlqaCEorshpi2zKTO8D0xOOEjUt6PNCVOQyu2pGIFLdbLBdI+S+id2iD+umgQNpADdRkFUB6t/kBAmCy6G5pfsrHTK9sLmAIykflRxZjDW/1//iixxQeEBS2nK8Z6tsEt71IC6j85PY5i1htKMrhaX3WXTuyMf1dvn2EVy5TqAFYK0n4UmvBKF1Gj9I4hWAWS4YiDcd8Ts6vwERwXRn8FG4zzK/0vivyb1rcY4r+BS1q28iRSzpjBuJg/ZsrJbLe3tsmgFd5j9wXHYFULU8UvueM4fyquuVfxPE0W12Kjn8+3nUygM0V5B3CoCmE0yBpwHXHfAbZqWTT0p3bF0S9b0sLt89XhF87ceHHa8gGxaJKhyTtaNZdWcH6IGBmPYDhbm//b9ZJX54BFwAPu+68L+Bm9I8zbsbZRo7sZHXNuhZwVbWRJ+B5UJeZSSAdTpVAJu7WkZucOxvtYkBP2NURpEAAAAASUVORK5CYII=) repeat; background-size: 192px;
+  opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility 0s .6s; }
+@media (min-resolution: 2dppx) { body::after { background-size: 96px; } }
+html.veil body::after { opacity: 1; visibility: visible; transition: none; }   /* it fades out over the GPU's own static */
+</style>
 <link rel="stylesheet" href="style.css">
 <script>
 // type options: ?type=c (Instrument Serif + Geist + Geist Mono, the default) | a (EB Garamond + Geist Mono) | b (Newsreader alone)
@@ -23,6 +31,8 @@
 (() => {
   const d = document.documentElement, p = new URLSearchParams(location.search), t = p.get('type'), qf = p.get('qf');
   d.classList.add('js');
+  // the opening: labels wait while the page develops out of static (js/main.js lifts this; the timer is a safety net)
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !p.has('pic')) { d.classList.add('boot', 'veil'); setTimeout(() => d.classList.remove('veil'), 4000); setTimeout(() => d.classList.remove('boot'), 6000); }
   if (/^[abc]$/.test(t)) d.dataset.type = t;  if (d.dataset.type === 'a' && /^[23]$/.test(qf)) d.dataset.qf = qf;
   const qface = { 1: 'cormorant-garamond-wght', 2: 'newsreader-display-italic-wght', 3: 'fraunces-display-wght' }[d.dataset.qf || 1];
   const fonts = { a: [qface, 'eb-garamond-wght', 'eb-garamond-italic-wght', 'geist-mono-wght'], b: ['newsreader-wght', 'newsreader-italic-wght'], c: ['instrument-serif', 'instrument-serif-italic', 'geist-wght', 'geist-mono-wght'] }[d.dataset.type];
@@ -34,31 +44,34 @@
 <canvas id="world" aria-hidden="true"></canvas>
 
 <header class="top">
-  <nav class="contact" aria-label="Contact">
+  <nav class="contact ink" aria-label="Contact">
     <a href="https://github.com/shikharish">github</a>
     <a href="https://x.com/shikharish">x</a>
+    <a href="https://www.linkedin.com/in/shikharish/">linkedin</a>
     <a href="mailto:shikhar.b@kgpian.iitkgp.ac.in">email</a>
   </nav>
 </header>
 
 <main class="stage">
   <section class="intro">
-    <p class="intro-label">Kharagpur, India<span data-clock></span></p>
-    <p class="lede">Hey there, I am Shikhar Soni, a CS undergrad at IIT Kharagpur, India. Building systems till singularity.</p>
-    <p class="hint"><span class="mouse">Drag or scrub across the picture to change it.</span><span class="touch">Swipe or rub the picture to change it.</span></p>  </section>
+    <div class="who ink" data-who>
+      <p class="intro-label">Kharagpur, India<span data-clock></span></p>
+      <p class="lede">Hey there, I am Shikhar Soni, a CS undergrad at IIT Kharagpur, India. Building systems till singularity.</p>
+    </div>
+    <p class="hint ink"><span class="mouse">Drag or scrub across the picture to change it.</span><span class="touch">Swipe or rub the picture to change it.</span></p>  </section>
 
   <figure class="gen" aria-label="Real footage, one clip after another, developing out of noise">
-    <div class="plate" data-plate><i></i><i></i><i></i><i></i><canvas class="flat" data-flat aria-hidden="true"></canvas></div>
+    <div class="plate" data-plate><canvas class="flat" data-flat aria-hidden="true"></canvas></div>
     <figcaption class="cap ink" data-cap><span class="cap-t" data-cap-t>Starship booster catch</span><span class="cap-d" data-cap-d> · 13 Oct 2024 · Starbase, Texas</span></figcaption>
   </figure>
 
   <aside class="quotes" aria-labelledby="qh">
-    <h2 id="qh">Quotes I believe in</h2>
+    <h2 id="qh" class="ink">Quotes I believe in</h2>
     <blockquote class="quote ink" data-q-box aria-live="off"><p data-q-text>When something is important enough, you do it even if the odds are not in your favor.</p><p class="by" data-q-by>— Elon Musk</p></blockquote>
   </aside>
 </main>
 
-<footer class="foot"><p>Built with my agent system · <a href="https://github.com/shikharish/shikharish.github.io">source</a></p></footer>
+<footer class="foot"><p class="ink">Built with 🤍 and my agents · <a href="https://github.com/shikharish/shikharish.github.io">source</a></p></footer>
 
 <script type="module">import(new URLSearchParams(location.search).has('sheet') ? './js/sheet.js' : './js/main.js');</script>
 <script>
@@ -66,7 +79,7 @@
 (() => {
   const el = document.querySelector('[data-clock]');
   const f = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' });
-  const tick = () => { el.textContent = ` · ${f.format(new Date())} IST`; };
+  const tick = () => { const s = ` · ${f.format(new Date())} IST`; if (el.textContent !== s) el.textContent = s; };
   tick(); setInterval(tick, 10000);
 })();
 </script>

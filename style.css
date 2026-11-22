@@ -49,23 +49,32 @@ html:not(.gl) #world { display: none; }
 /* text the GPU draws out of noise: real text stays in place (selectable, read aloud), the pixels come from the shader;
    --tone tells js/text.js how bright to draw a part (1 = ink) */
 html.gl .ink, html.gl .ink * { color: transparent; }
+html.gl .ink a { border-bottom-color: transparent; }   /* js/text.js draws the underline */
+.quotes h2, .intro .hint, .foot p { --tone: .58; }   /* the dim labels, as bright as their CSS colour */
+.ink a { --tone: 1; }
 
 /* the top line and the footer use the stage's three columns, so their ends line up with the intro and the quote */
 .top, .foot { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, .8fr) var(--pl) minmax(0, 1.2fr); column-gap: calc(var(--pl) * 0.1); padding: 18px var(--pad) 0; color: var(--dim); }
 .contact { grid-column: 3; justify-self: start; width: min(100%, calc(var(--s-q) * var(--q-width))); display: flex; justify-content: flex-end; gap: 6px 22px; flex-wrap: wrap; }
-.foot { padding: 0 var(--pad) 28px; }
-.foot p { grid-column: 1; justify-self: end; width: min(100%, calc(var(--s-lede) * 17)); margin: 0; white-space: nowrap; font-size: var(--s-label); letter-spacing: var(--ls-label); text-transform: var(--tt-label); }
+.foot { padding: 0 var(--pad); height: 48px; align-items: center; }
+.foot p { grid-column: 1; justify-self: start; width: max-content; margin: 0 0 0 calc(100% - min(100%, calc(var(--s-lede) * 17))); white-space: nowrap; font-size: var(--s-label); letter-spacing: var(--ls-label); text-transform: var(--tt-label); }
 
 /* three columns hung from the plate's top edge: the quote (the largest words) gets the wider side column,
    the intro the narrower one; the intro's first line and the quote's first line start level */
-.stage { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.2fr); align-items: start; align-content: center; column-gap: calc(var(--pl) * 0.1); padding: 8px var(--pad) 20px; min-height: calc(100svh - 52px); }
+/* the first screen holds the top line, the stage and the footer; the stage's content sits a little above centre
+   (more room below than above), where the eye reads "centred" */
+.stage { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, .8fr) auto minmax(0, 1.2fr); align-items: start; align-content: center; column-gap: calc(var(--pl) * 0.1); padding: 8px var(--pad) calc(20px + 4svh); min-height: calc(100svh - 52px - 52px); }
 
 /* left: who I am (smaller and quieter than the quote) */
 .intro { justify-self: end; width: min(100%, calc(var(--s-lede) * 17)); }
 /* its label mirrors "Quotes I believe in", so the three columns start level with the plate's top edge */
+.who .intro-label { --tone: .55; } .who .lede { --tone: .8; }   /* brightness when drawn by the GPU */
 .intro-label { font: 400 var(--s-qlabel)/var(--hl) var(--label); height: var(--hl); margin: 0 0 var(--hgap); letter-spacing: var(--ls-label); text-transform: var(--tt-label); color: var(--dim); white-space: nowrap; }
 .intro .hint { transition: opacity 1.4s ease .3s; }
-html.used .intro .hint { opacity: 0; }   /* the "drag / swipe" hint goes once the picture has been touched */
+html.used .intro .hint { opacity: 0; }
+/* the opening (js/main.js): the plain labels appear as the static clears */
+.top, .quotes h2, .foot { transition: opacity 1.2s ease; }
+html.boot .top, html.boot .quotes h2, html.boot .intro .hint, html.boot .foot { opacity: 0; }   /* the "drag / swipe" hint goes once the picture has been touched */
 .lede { font: var(--w-lede) var(--s-lede)/var(--lh-lede) var(--voice); color: var(--c-lede); margin: 0 0 .9em; text-wrap: balance; }
 .hint { color: var(--dim); margin: 0; max-width: 30em; text-wrap: balance; }
 .hint .touch { display: none; }
@@ -74,11 +83,6 @@ html.used .intro .hint { opacity: 0; }   /* the "drag / swipe" hint goes once th
 /* centre: the generator */
 .gen { margin: 0; width: var(--pl); position: relative; }
 .plate { position: relative; width: var(--pl); aspect-ratio: 1; cursor: crosshair; touch-action: none; user-select: none; -webkit-user-select: none; }
-.plate i { position: absolute; width: 14px; height: 14px; border: 0 solid var(--dim); pointer-events: none; }
-.plate i:nth-child(1) { left: -6px; top: -6px; border-width: 1px 0 0 1px; }
-.plate i:nth-child(2) { right: -6px; top: -6px; border-width: 1px 1px 0 0; }
-.plate i:nth-child(3) { left: -6px; bottom: -6px; border-width: 0 0 1px 1px; }
-.plate i:nth-child(4) { right: -6px; bottom: -6px; border-width: 0 1px 1px 0; }
 .flat { display: none; width: 100%; height: 100%; }
 html.no-gl .flat { display: block; }
 /* the subtitle: a caption, like a film still's or a museum label: the title in italic, date and place quieter */
@@ -128,7 +132,7 @@ html.no-gl .flat { display: block; }
   .top { display: flex; justify-content: flex-end; }
   .contact { width: auto; }
   .foot { display: block; padding-top: 8px; }
-  .foot p { width: auto; justify-self: start; white-space: normal; }
+  .foot p { width: auto; margin: 0; white-space: normal; }
   .intro { width: auto; margin-top: 0; }
   .lede { margin-bottom: .6em; }
   .hint { margin-bottom: 20px; text-wrap: balance; }

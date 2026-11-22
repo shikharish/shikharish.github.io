@@ -21,7 +21,11 @@ const MEDIA_FPS = 24;    // real footage: at most this many frame uploads a seco
 const HOLD_AFTER_NAV = 15;   // seconds without autoplay after someone swipes to a clip
 const OUT = 1.2;         // seconds for a clear picture (or quote) to dissolve into static before the next one develops
 const STIR_RATE = 0.9;   // stirring dissolves at most this much of the step per second (≈ 1 s from clear to static)
-const Q_CLEAR = 0.08;    // a quote's step at or below this reads as clear
+// transition options for the preview (23 Nov, grain only): ?tx=a dust · b erosion · c drift (none: the static dissolve);
+// &wave=1 changes the quote together with the clip, a moment later, as if one wave crossed the page
+// a quote change, start to end: the noise rises (eased), holds while the old words' static cross-fades into the new
+// words' static, then falls (eased). Fractions of Q_DUR: rise to Q_UP, hold to Q_DOWN, fall to 1.
+const Q_DUR = 3.0, Q_UP = 0.4, Q_DOWN = 0.6;
 const smooth = (a, b, v) => { const x = clamp01((v - a) / (b - a)); return x * x * (3 - 2 * x); };
 
 const [quotes, reel] = await Promise.all([
@@ -30,6 +34,11 @@ const [quotes, reel] = await Promise.all([
 ]);
 const solo = params.get('pic');   // dev: one clip / picture alone, sharp and animating, no reel
 if (solo) reel.splice(0, reel.length, solo);
+// every visit gets its own order of clips and of quotes (a fresh shuffle each page load)
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+if (!solo) shuffle(reel);
+const BOOT = !reduce && !solo;   // on opening, the whole page starts as static and develops together
+if (!params.has('q')) shuffle(quotes);
 const NQ = quotes.length, NC = reel.length;
 
 /* ---------- picture modules ---------- */
@@ -52,7 +61,7 @@ function keepNear(c) {   // only the clip on the plate and its two neighbours st
 }
 
 /* ---------- state ---------- */
-// G: the plate (cur = index into the reel; the start is shuffled per visit, the order is kept). Q: the quote column.
+// G: the plate (cur = index into the reel, which is shuffled per visit). Q: the quote column.
 const G = {
   cur: Math.floor(Math.random() * NC), seeds: reel.map(() => 1000 + Math.floor(Math.random() * 9000)),
   T: 0.42, armed: false, pending: -1, sharp: false,
@@ -63,7 +72,7 @@ const G = {
 };
 const Q = {
   cur: params.has('q') ? Math.min(NQ - 1, Math.max(0, +params.get('q') - 1)) : Math.floor(Math.random() * NQ),
-  pending: -1, T: reduce ? 0 : 0.42, dwell: 0, hover: false,
+  pending: -1, T: 0, u: reduce ? 1 : Q_DOWN, xa: 1, dwell: 0, hover: false,
 };
 
 /* ---------- DOM ---------- */
@@ -95,14 +104,18 @@ function fitQuote() {
     k = Math.max(floor, k - 0.04); qBox.style.setProperty('--qk', k.toFixed(3));
   }
 }
+const PREV = { info: null, a: 0 };   // the previous quote's static while it cross-fades out (GPU text slot 2)
 function showQuote(i) {   // the words swap while the quote is pure static (at once with reduced motion / no WebGL)
   const q = quotes[i];
+  if (R && !reduce && TXT[0].info) { R.swapText(0, 2); PREV.info = TXT[0].info; }   // the old words' static stays a moment, fading out
   Q.cur = i; Q.pending = -1; Q.dwell = 0;
   qText.textContent = q.text; qBy.textContent = credit(q); qBy.hidden = !qBy.textContent;
   fitQuote();
   TXT[0].dirty = true;
 }
+const CPREV = { info: null, xf: 1 };   // the previous subtitle's static while it cross-fades into the new one (GPU text slot 4)
 function showClip() {   // the subtitle under the plate describes the clip on it
+  if (R && !reduce && TXT[1].info) { R.swapText(1, 4); CPREV.info = TXT[1].info; CPREV.xf = 0; }
   const d = descOf(G.cur);
   setCaption(d); plateEl.setAttribute('aria-label', `picture: ${d}`);
   TXT[1].dirty = true;
@@ -148,14 +161,27 @@ function sizeForms() {
   maxLod = R.allocForms(s, 1); drawPic();
 }
 
-const TXT = [{ el: qBox, cv: document.createElement('canvas'), dirty: true }, { el: capEl, cv: document.createElement('canvas'), dirty: true }];
+const whoEl = $('[data-who]');
+// words drawn out of noise: the quote, the subtitle and the intro (GPU text slots 0, 1, 3; slot 2 is the previous quote)
+// and the small labels (slots 5-8): top links, "Quotes I believe in", the hint, the footer; op = the element whose CSS
+// opacity fades them (the opening, the hint going away), which the GPU follows
+const LABELS = [['.contact', '.top'], ['#qh', '#qh'], ['.intro .hint', '.intro .hint'], ['.foot p', '.foot']].map(([s, o]) => [$(s), $(o)]);
+const TXT = [[qBox, 0, qText], [capEl, 1, capEl], [whoEl, 3, ledeEl], ...LABELS.map(([el, op], i) => [el, 5 + i, el, op])]
+  .map(([el, slot, fontEl, op]) => ({ el, slot, fontEl, op, cv: document.createElement('canvas'), dirty: true }));
+for (const s of TXT.slice(3)) for (const ev of ['pointerover', 'pointerout', 'focusin', 'focusout']) s.el.addEventListener(ev, () => { s.dirty = true; });   // link hover: brighter underline
+new MutationObserver(() => { TXT[2].dirty = true; }).observe($('[data-clock]'), { childList: true, characterData: true, subtree: true });   // the clock ticks
+const I = { T: 0, u: BOOT ? Q_DOWN : 1 };   // the intro develops out of noise once, on load, with the quote
+let boot = BOOT ? 1 : 0, veil = 1;
+if (!BOOT) root.classList.remove('boot');   // e.g. ?still: no opening, labels show at once
+if (BOOT) G.T = 1;
 function rasterTxt(k) {
   const s = TXT[k]; s.info = rasterText(s.el, s.cv, Math.max(1, px * 1.25), Math.min(2048, R.maxTex));
-  s.font = parseFloat(getComputedStyle(k ? capEl : qText).fontSize); R.uploadText(k, s.cv); s.dirty = false;
+  s.font = parseFloat(getComputedStyle(s.fontEl).fontSize); R.uploadText(s.slot, s.cv); s.dirty = false;
 }
 
 /* ---------- moving along the reel ---------- */
 function switchTo(c) {   // the plate is pure static here, so a redraw is invisible
+  G.pp = null; G.sw = performance.now() / 1000;   // the coming-in half starts gently
   const was = media.get(reel[G.cur]);
   if (was?.video && G.cur !== c) was.el.pause();
   G.cur = c; G.armed = false; G.pending = -1; G.skips = 0; G.sharp = false; G.T = 1; G.lock = true;
@@ -189,7 +215,7 @@ function goQuote(i) {   // grain the quote out, then the next one in
   i = (i + NQ) % NQ;
   if (i === Q.cur && Q.pending < 0) return;
   if (reduce || !R) showQuote(i);
-  else Q.pending = i;
+  else { Q.pending = i; if (Q.u >= 1) Q.u = 0; }
 }
 
 /* ---------- input: stirring, holding still, swiping ---------- */
@@ -274,7 +300,9 @@ plateEl.addEventListener('touchend', (e) => {
 /* ---------- small events ---------- */
 const IP = [];   // "inpainting": a patch of the plate re-noises and is drawn again
 function inpaint(u0, v0, u1, v1, peak = 0.75) { if (IP.length < MAX_IP) IP.push({ r: [u0, v0, u1, v1], age: 0, peak, up: 0.3, down: rand(1.4, 2.2) }); }
-const specks = [0, 1, 2, 3].map((k) => ({ a: rand(0, 6.28), sp: rand(0.07, 0.12) * (k % 2 ? 1 : -1) * (k === 3 ? 0.6 : 1), rx: rand(0.56, 0.64), ry: rand(0.12, 0.22), tilt: rand(-0.3, 0.3), r: rand(2, 3.6), t: 0, next: rand(2, 6), phase: 0 }));
+// little dots drifting anywhere on the page, each drawn out of noise now and then; they never cross the picture
+// (they fade out at its edge) and wrap around the screen's sides (MAX_SP in gl.js is 24)
+const specks = [...Array(22).keys()].map((k) => ({ x: Math.random(), y: Math.random(), a: rand(0, 6.28), sp: rand(7, 20), turn: rand(-0.25, 0.25), wob: rand(0.15, 0.5), r: k < 6 ? rand(2, 3.4) : rand(1.2, 2.4), t: 0, next: rand(1, 7), phase: 0 }));
 // Two clocks. A clip plays once: its picture starts to dissolve END_LEAD s before the footage ends (a photo stays 9 s);
 // a quote stays 9–12 s (longer quotes longer).
 // They never change together: a quote only starts to change while the plate is clear with at least 3 s left on its clip,
@@ -285,7 +313,7 @@ const clipLeft = () => {
   return M?.video && !M.blocked && M.el.duration ? M.el.duration - M.el.currentTime - END_LEAD : 9 - G.dwell;
 };
 const quoteDwell = (i) => Math.min(12, Math.max(9, quotes[i].text.split(/\s+/).length * 0.25));
-const quoteIdle = () => Q.pending < 0 && Q.T <= Q_CLEAR;
+const quoteIdle = () => Q.pending < 0 && Q.u >= 1;
 const plateIdle = () => G.pending < 0 && !G.auto && !G.stirring && G.T <= FLOOR + 0.01;
 
 /* ---------- sizing ---------- */
@@ -333,7 +361,7 @@ function frame(now) {
 
   // read layout first (no writes before this point in the frame)
   plateR = rectOf(plateEl); colR = rectOf(qCol);
-  const qr = rectOf(qBox), cr = rectOf(capEl);
+  const qr = rectOf(qBox), cr = rectOf(capEl), wr = rectOf(whoEl);
   const onScreen = plateR.y < vh && plateR.y + plateR.h > 0;
 
   /* the plate's noise step */
@@ -344,7 +372,8 @@ function frame(now) {
   if (G.armed && !G.stirring && !G.auto && G.pending < 0 && G.T >= 0.9) { G.pending = (G.cur + 1) % NC; loadPic(reel[G.pending]); }
   if (reduce) G.T = 0;
   else if (G.pending >= 0) {
-    G.T = Math.min(1, G.T + dt / OUT);
+    if (G.pp == null) { G.pp = 0; G.po0 = G.T; }   // eased: the static rises gently, speeds up, then settles at full
+    G.pp = Math.min(1, G.pp + dt / OUT); G.T = G.po0 + (1 - G.po0) * smooth(0, 1, G.pp);
     const id = reel[G.pending];
     if (G.T >= 1 && ready.has(id)) {
       // a clip that failed to load is skipped (once round the reel at most), rather than showing an empty plate
@@ -355,14 +384,23 @@ function frame(now) {
   else if (!G.stirring && !G.auto) {
     G.armed = false;
     const floor = G.sharp ? 0 : FLOOR;
-    if (G.T > FLOOR) G.T = Math.max(floor, G.T - dt * (0.15 + 0.36 * G.T));   // under 3 s from static to clear
+    const ease = 0.1 + 0.9 * smooth(0, 0.6, sec - (G.sw ?? -9));   // after a new clip, the clearing starts gently
+    if (G.T > FLOOR) G.T = Math.max(floor, G.T - dt * (0.15 + 0.36 * G.T) * ease);   // about 3 s from static to clear
     else if (G.T > floor) G.T = Math.max(floor, G.T - dt * 0.12);            // sharpening: the last, finest steps
   }
 
   /* the quote's own step: grains out to static, the words swap, the new ones grain in (same curve as a picture) */
   if (reduce) Q.T = 0;
-  else if (Q.pending >= 0) { Q.T = Math.min(1, Q.T + dt / OUT); if (Q.T >= 1) showQuote(Q.pending); }
-  else if (Q.T > 0) Q.T = Math.max(0, Q.T - dt * (0.15 + 0.36 * Q.T));
+  else {
+    if (Q.u < 1) {
+      const u0 = Q.u; Q.u = Math.min(1, Q.u + dt / Q_DUR);
+      if (u0 < Q_UP && Q.u >= Q_UP && Q.pending >= 0) showQuote(Q.pending);   // the words swap at full static
+      if (Q.u >= 1 && Q.pending >= 0) Q.u = 0;   // another quote was asked for meanwhile
+    }
+    const u = Q.u, hold = u >= Q_UP && u < Q_DOWN;
+    Q.T = u < Q_UP ? smooth(0, Q_UP, u) : u < Q_DOWN ? 1 : 1 - smooth(Q_DOWN, 1, u);
+    Q.xa = hold ? smooth(Q_UP, Q_DOWN, u) : 1; PREV.a = hold ? 1 - Q.xa : 0;
+  }
 
   // the picture's own clock, and its redraws (animated pictures only, at most MAX_FPS, only while on screen)
   if (!G.clear && G.T <= CLEAR && G.pending < 0) G.clear = true;
@@ -388,7 +426,9 @@ function frame(now) {
   const clipRuns = !reduce && !solo && !G.hover && !G.focus && sec >= G.hold;
   if (clipRuns && plateIdle()) {
     G.dwell += dt;
-    if (clipLeft() <= 0) { G.auto = { age: 0, ph: rand(0, 6) }; loadPic(reel[(G.cur + 1) % NC]); }
+    if (clipLeft() <= 0) {
+      G.auto = { age: 0, ph: rand(0, 6) }; loadPic(reel[(G.cur + 1) % NC]);
+    }
   }
   if (G.auto) {
     const au = G.auto; au.age += dt;
@@ -404,9 +444,13 @@ function frame(now) {
     if (Q.dwell >= quoteDwell(Q.cur) && plateIdle() && !(clipRuns && clipLeft() < 3)) goQuote(Q.cur + 1);
   }
 
+  // the opening: full-screen static that clears while everything develops
+  if (boot > 0) { boot = Math.max(0, boot - dt / 2.4); if (boot < 0.45) root.classList.remove('boot'); }
+
   // background: the text slots
-  if (TXT[0].dirty) rasterTxt(0);
-  if (TXT[1].dirty) rasterTxt(1);
+  TXT.forEach((s, k) => { if (s.dirty) rasterTxt(k); });
+  if (CPREV.xf < 1) CPREV.xf = Math.min(1, CPREV.xf + dt / 0.6);
+  if (I.u < 1) { I.u = Math.min(1, I.u + dt / Q_DUR); I.T = 1 - smooth(Q_DOWN, 1, I.u); }
 
   // the rare big moment: a band of static sweeps the whole screen and the picture is re-sampled with a new seed
   let sweep = [0, 0];
@@ -434,18 +478,20 @@ function frame(now) {
     ipA.set(p.r, nip * 4); ipT[nip] = p.peak * Math.sin(Math.min(1, t) * Math.PI / 2); nip++;
   }
 
-  // orbiting specks around the plate (they pass behind it)
+  // the drifting dots: each wanders on a slowly turning heading
   let ns = 0;
-  const pcx = plateR.x + plateR.w / 2, pcy = plateR.y + plateR.h / 2;
   if (!reduce) for (const s of specks) {
-    s.a += dt * s.sp;
-    const x = Math.cos(s.a) * s.rx * plateR.w, y0 = Math.sin(s.a) * s.ry * plateR.w, z = Math.sin(s.a);
-    const X = pcx + x * Math.cos(s.tilt) - y0 * Math.sin(s.tilt), Y = pcy + x * Math.sin(s.tilt) + y0 * Math.cos(s.tilt);
+    s.a += dt * (s.turn + 0.5 * Math.sin(time * s.wob + s.r * 7));
+    s.x += Math.cos(s.a) * s.sp * dt / vw; s.y += Math.sin(s.a) * s.sp * dt / vh;
+    s.x -= Math.floor(s.x); s.y -= Math.floor(s.y);   // off one side, back on the other
+    const X = s.x * vw, Y = s.y * vh;
     s.next -= dt; if (s.next <= 0) { s.next = rand(3, 7); s.phase = 1; }
     if (s.phase > 0) s.phase = Math.max(0, s.phase - dt / 1.6);
     s.t = s.phase > 0 ? Math.sin(s.phase * Math.PI) * 0.8 : 0;
-    if (z > 0 && inPlate(X, Y)) continue;
-    sp.set([X, Y, s.r * (1 + 0.25 * z), 0.9], ns * 4); spt[ns] = s.t; ns++;
+    const ox = Math.max(plateR.x - X, 0, X - plateR.x - plateR.w), oy = Math.max(plateR.y - Y, 0, Y - plateR.y - plateR.h);
+    const pres = smooth(0, 16, Math.hypot(ox, oy)) * smooth(0, 24, Math.min(X, vw - X, Y, vh - Y));   // not on the picture; soft at the screen's sides
+    if (pres <= 0) continue;
+    sp.set([X, Y, s.r, 0.9 * pres], ns * 4); spt[ns] = s.t; ns++;
   }
 
   // cursor noise fades back to zero
@@ -460,17 +506,28 @@ function frame(now) {
   // Words' grain fades out last and back in first (presence a), so a swap at full static is never seen.
   const T = G.T, QT = Q.T;
   const pt = [clamp01(1.25 * T - 0.25), clamp01(1.25 * T - 0.1), clamp01(1.6 * T)];
-  const t0 = TXT[0].info, t1 = TXT[1].info;
+  const t0 = TXT[0].info, t1 = TXT[1].info, t2 = TXT[2].info;
   // the subtitle's noise hugs its letters like the quote's: its mask is blurred by the same share of its font size
   // (one blur for both turned the small one-line subtitle into a solid box of static)
   const blurPerFont = t0 ? Math.min(0.25, 2 ** Math.max(0, t0.maxLod - 5.5) / t0.sc / TXT[0].font) : 0.2;
+  const envFor = (ti, font) => Math.max(0, Math.min(ti.maxLod - 5.5, Math.log2(Math.max(1, ti.sc * blurPerFont * font))));
+  const whoEnv = t2 && envFor(t2, TXT[2].font);
   const capEnv = t1 && Math.max(0, Math.min(t1.maxLod - 5.5, Math.log2(Math.max(1, t1.sc * blurPerFont * TXT[1].font))));
   R.draw({
-    vw, vh, px, time, sigma: 0.62, flick: reduce ? 0 : 10, noiseRate: reduce ? 0 : 6, floor: 0.055, curAmt: 0.9, sweep,
+    vw, vh, px, time, sigma: 0.62, noiseRate: reduce ? 0 : 6, floor: 0.055 + 0.05 * smooth(0, 1, boot), curAmt: 0.9, sweep,
     plate: { ...plateR, layer: 0, t: pt, texPerCss: side / plateR.w, maxLod },
     nip, ip: ipA, ipt: ipT,
-    text: [t0 && { x: qr.x, y: qr.y, w: t0.w, h: t0.h, t: clamp01((QT - Q_CLEAR) / 0.62), a: 1 - smooth(0.8, 1, QT), texPerCss: t0.sc, maxLod: t0.maxLod },
-      t1 && { x: cr.x, y: cr.y, w: t1.w, h: t1.h, t: clamp01((T - 0.1) / 0.65), a: 1 - smooth(0.8, 1, T), texPerCss: t1.sc, maxLod: t1.maxLod, envLod: capEnv }],
+    text: [t0 && { x: qr.x, y: qr.y, w: t0.w, h: t0.h, t: QT, a: Q.xa, texPerCss: t0.sc, maxLod: t0.maxLod },
+      t1 && { x: cr.x, y: cr.y, w: t1.w, h: t1.h, t: clamp01((T - 0.1) / 0.65), a: smooth(0, 1, CPREV.xf), texPerCss: t1.sc, maxLod: t1.maxLod, envLod: capEnv },
+      PREV.a > 0 && PREV.info && { x: qr.x, y: qr.y, w: PREV.info.w, h: PREV.info.h, t: 1, a: PREV.a, texPerCss: PREV.info.sc, maxLod: PREV.info.maxLod },
+      t2 && { x: wr.x, y: wr.y, w: t2.w, h: t2.h, t: I.T, a: 1, texPerCss: t2.sc, maxLod: t2.maxLod, envLod: whoEnv },
+      CPREV.xf < 1 && CPREV.info && { x: cr.x, y: cr.y, w: CPREV.info.w, h: CPREV.info.h, t: 1, a: 1 - smooth(0, 1, CPREV.xf), texPerCss: CPREV.info.sc, maxLod: CPREV.info.maxLod, envLod: capEnv },
+      ...TXT.slice(3).map((s) => {   // the small labels (slots 5-8): they develop out of noise as they fade in
+        const i = s.info, a = i ? +getComputedStyle(s.op).opacity : 0;
+        if (a < 0.01) return null;
+        const r = rectOf(s.el);
+        return { x: r.x, y: r.y, w: i.w, h: i.h, t: clamp01(1 - a) * 0.9, a, texPerCss: i.sc, maxLod: i.maxLod, envLod: envFor(i, s.font) };
+      })],
     ns, sp, spt,
     media: med && R && (() => {
       const lk = { ...LOOK, ...mod.look }, [z, ox, oy] = motionAt(mod, reduce ? (mod.still ?? 0) : G.t);
@@ -478,6 +535,8 @@ function frame(now) {
     })(),
   });
 
+
+  if (veil && ++veil > 2) { root.classList.remove('veil'); veil = 0; }   // the GPU's own static is on screen now
 
   // keep it smooth on slow GPUs: drop the drawing resolution once if frames are long
   if (frameLog.length === 120 && time > 3 && px > pxBase * 0.55) {
@@ -490,17 +549,17 @@ for (let k = 1; !(await loadPic(reel[G.cur])) && k < NC; k++) G.cur = (G.cur + 1
 showQuote(Q.cur); showClip();
 if (solo) { G.T = 0.6; G.sharp = true; }
 if (!R) {
-  root.classList.add('no-gl');
+  root.classList.add('no-gl'); root.classList.remove('boot', 'veil');
   await document.fonts.ready; fitQuote(); startMedia(G.cur); flatDraw();
 } else {
   // while the GPU context is gone the drawn words would be invisible (html.gl hides the DOM text): show the DOM text
-  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lost = true; root.classList.remove('gl'); });
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lost = true; root.classList.remove('gl', 'boot', 'veil'); });
   canvas.addEventListener('webglcontextrestored', () => { R = createRenderer(canvas); side = 0; sizeForms(); TXT.forEach((t) => (t.dirty = true)); cursorGrid(); lost = false; root.classList.add('gl'); });
   await Promise.all(['500 20px Geist', '450 20px Geist', '500 12px "Geist Mono"', '600 12px "Geist Mono"', '400 12px "Geist Mono"'].map((f) => document.fonts.load(f)));
-  await loadFonts([qBox, capEl]);   // the faces of the words drawn out of noise (quote, credit, subtitle)
+  await loadFonts(TXT.map((s) => s.el));   // the faces of the words drawn out of noise (quote, credit, subtitle, intro)
   await document.fonts.ready; fitQuote();
   px = Infinity; sizeCanvas(); cursorGrid(); sizeForms();
-  rasterTxt(0); rasterTxt(1);
+  TXT.forEach((_, k) => rasterTxt(k));
   R.cursor(C.u8, C.w, C.h);
   if (reduce) G.T = 0;
   startMedia(G.cur);

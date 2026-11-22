@@ -6,20 +6,25 @@
 // No neural network: this imitates what a sampler shows, step by step.
 
 export const MAX_SP = 24, MAX_IP = 8;
+// text slots (every piece of text on the page is drawn out of noise): 0 quote, 1 subtitle, 2 previous quote, 3 intro,
+// 4 previous subtitle, 5 top links, 6 "Quotes I believe in", 7 the hint, 8 the footer
+export const NTXT = 9;
+const TXT_UNITS = [3, 4, 6, 7, 8, 9, 10, 11, 12];   // texture units (0 forms, 2 cursor, 5 footage)
+const slots = (f) => [...Array(NTXT).keys()].map(f).join('\n');
 
 const VS = `#version 300 es
 void main(){ vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)); gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
 
 const FS = `#version 300 es
 precision highp float; precision highp int; precision highp sampler2DArray;
-uniform vec2 uRes, uView; uniform float uPx, uTime, uSigma, uFlick, uNoiseRate, uFloor, uCurAmt;
+uniform vec2 uRes, uView; uniform float uPx, uTime, uSigma, uFloor, uCurAmt, uNoiseRate;
 uniform vec3 uBg, uInk;
 uniform sampler2D uCur;
 uniform vec2 uSweep;
 uniform sampler2DArray uForms;
 uniform vec4 uPlate; uniform float uLayer; uniform vec3 uPT; uniform vec2 uLodK;
 uniform int uNIp; uniform vec4 uIp[${MAX_IP}]; uniform float uIpT[${MAX_IP}];
-uniform sampler2D uTx0, uTx1; uniform vec4 uTR0, uTR1; uniform float uTT0, uTT1; uniform vec3 uTL0, uTL1; uniform float uTOn0, uTOn1, uTA0, uTA1;
+${slots((i) => `uniform sampler2D uTx${i}; uniform vec4 uTR${i}; uniform float uTT${i}, uTOn${i}, uTA${i}; uniform vec3 uTL${i};`)}
 // real footage / photos: one grey frame texture, split into three frequency bands in here (see the plate)
 uniform sampler2D uMed; uniform float uMedOn; uniform vec3 uMX; uniform vec4 uMK; uniform vec3 uMLev; uniform vec2 uMLod;
 uniform int uNS; uniform vec4 uSp[${MAX_SP}]; uniform float uSpT[${MAX_SP}];
@@ -36,7 +41,6 @@ float vnoise(vec2 p){
 }
 vec3 abar(vec3 t){ vec3 c = cos((t + 0.008) / 1.008 * 1.5707963); return max(c * c, vec3(1e-4)); }
 float abar1(float t){ float c = cos((t + 0.008) / 1.008 * 1.5707963); return max(c * c, 1e-4); }
-
 // a: presence (0..1): fades the words' grain away at the very end of a dissolve, so the swap to new words is never seen
 void textSlot(sampler2D tex, vec4 r, float T, vec3 lk, float a, float tx, vec2 css, inout float sig, inout float nz, inout float fine){
   vec2 uv = (css - r.xy) / r.zw;
@@ -103,8 +107,7 @@ void main(){
     nz = max(nz, max(n.r, max(n.g, n.b)));
   }
 
-  if (uTOn0 > 0.5) textSlot(uTx0, uTR0, uTT0, uTL0, uTA0, tx, css, sig, nz, fine);
-  if (uTOn1 > 0.5) textSlot(uTx1, uTR1, uTT1, uTL1, uTA1, tx, css, sig, nz, fine);
+${slots((i) => `  if (uTOn${i} > 0.5) textSlot(uTx${i}, uTR${i}, uTT${i}, uTL${i}, uTA${i}, tx, css, sig, nz, fine);`)}
 
   for (int i = 0; i < ${MAX_SP}; i++) {   // small moving things (specks, packets), each with its own noise step
     if (i >= uNS) break; vec4 sp = uSp[i]; float d = length(css - sp.xy);
@@ -117,11 +120,14 @@ void main(){
   }
 
   uvec2 g = uvec2(gl_FragCoord.xy);
+  // the grain morphs smoothly from one random pattern to the next (uNoiseRate patterns a second): both the noise and
+  // the print screen blend between their two nearest patterns, so nothing ever snaps from one frame to the next
   float ft = uTime * uNoiseRate; float k = floor(ft); float f = ft - k; f = f * f * (3.0 - 2.0 * f);
+  float nrm = inversesqrt((1.0 - f) * (1.0 - f) + f * f);   // keeps the blend as strong as one pattern
   uint ki = uint(k);
-  float e = mix(gauss(g, ki), gauss(g, ki + 1u), f) * inversesqrt((1.0 - f) * (1.0 - f) + f * f);
+  float e = mix(gauss(g, ki), gauss(g, ki + 1u), f) * nrm;
   float d = clamp(sig + uSigma * nz * e, 0.0, 1.0);
-  float scr = rnd(uvec3(g, uint(floor(uTime * uFlick)) + 911u));
+  float scr = clamp(0.5 + (mix(rnd(uvec3(g, ki * 7u + 911u)), rnd(uvec3(g, (ki + 1u) * 7u + 911u)), f) - 0.5) * nrm, 0.0, 1.0);
   float ink = clamp((pow(d, 0.85) - scr * 0.85) * 5.0, 0.0, 1.0);   // stochastic print screen: the grain look
   float soft = smoothstep(0.2, 0.6, fine) * step(sig - fine, 0.02);  // keep thin lines and small text readable
   ink = mix(d, ink, mix(mix(0.62, 0.25, soft), uMK.z, media));      // footage has its own grain amount
@@ -146,7 +152,7 @@ export function createRenderer(canvas) {
   const U = {};
   const n = gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS);
   for (let i = 0; i < n; i++) { const name = gl.getActiveUniform(prog, i).name.replace(/\[0\]$/, ''); U[name] = gl.getUniformLocation(prog, name); }
-  gl.uniform1i(U.uForms, 0); gl.uniform1i(U.uCur, 2); gl.uniform1i(U.uTx0, 3); gl.uniform1i(U.uTx1, 4); gl.uniform1i(U.uMed, 5);
+  gl.uniform1i(U.uForms, 0); gl.uniform1i(U.uCur, 2); gl.uniform1i(U.uMed, 5); TXT_UNITS.forEach((u, i) => gl.uniform1i(U['uTx' + i], u));
   gl.uniform3fv(U.uBg, hex('#0b0b12')); gl.uniform3fv(U.uInk, hex('#e8e4da'));
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
   const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -161,7 +167,8 @@ export function createRenderer(canvas) {
   let forms = null, formSide = 0;
   const cur = gl.createTexture(); gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, cur); params(gl.TEXTURE_2D, false);
   let curW = 0, curH = 0;
-  const txt = [0, 1].map((i) => { const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE3 + i); gl.bindTexture(gl.TEXTURE_2D, t); params(gl.TEXTURE_2D, true); gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 1, 1, 0, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(1)); return t; });
+  const unit = (i) => gl.TEXTURE0 + TXT_UNITS[i];
+  const txt = [...Array(NTXT).keys()].map((i) => { const t = gl.createTexture(); gl.activeTexture(unit(i)); gl.bindTexture(gl.TEXTURE_2D, t); params(gl.TEXTURE_2D, true); gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, 1, 1, 0, gl.RED, gl.UNSIGNED_BYTE, new Uint8Array(1)); return t; });
   // real footage: the current video frame (or photo), RGBA so the browser can copy decoded frames on the GPU
   let med = null, medW = 0, medH = 0;
   function allocMed(w, h) {
@@ -186,8 +193,12 @@ export function createRenderer(canvas) {
       layers.forEach((cv, k) => gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, i * 3 + k, formSide, formSide, 1, gl.RED, gl.UNSIGNED_BYTE, cv));
       gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
     },
+    swapText(a, b) {   // hand slot a's texture to slot b (no re-upload)
+      [txt[a], txt[b]] = [txt[b], txt[a]];
+      for (const i of [a, b]) { gl.activeTexture(unit(i)); gl.bindTexture(gl.TEXTURE_2D, txt[i]); }
+    },
     uploadText(i, cv) {
-      gl.activeTexture(gl.TEXTURE3 + i); gl.bindTexture(gl.TEXTURE_2D, txt[i]);
+      gl.activeTexture(unit(i)); gl.bindTexture(gl.TEXTURE_2D, txt[i]);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.R8, gl.RED, gl.UNSIGNED_BYTE, cv);
       gl.generateMipmap(gl.TEXTURE_2D);
     },
@@ -207,12 +218,12 @@ export function createRenderer(canvas) {
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(U.uRes, canvas.width, canvas.height); gl.uniform2f(U.uView, f.vw, f.vh);
       gl.uniform1f(U.uPx, f.px); gl.uniform1f(U.uTime, f.time); gl.uniform1f(U.uSigma, f.sigma);
-      gl.uniform1f(U.uFlick, f.flick); gl.uniform1f(U.uNoiseRate, f.noiseRate); gl.uniform1f(U.uFloor, f.floor); gl.uniform1f(U.uCurAmt, f.curAmt);
+      gl.uniform1f(U.uNoiseRate, f.noiseRate);  gl.uniform1f(U.uFloor, f.floor); gl.uniform1f(U.uCurAmt, f.curAmt);
       gl.uniform2f(U.uSweep, f.sweep[0], f.sweep[1]);
       const p = f.plate;
       gl.uniform4f(U.uPlate, p.x, p.y, p.w, p.h); gl.uniform1f(U.uLayer, p.layer); gl.uniform3fv(U.uPT, p.t); gl.uniform2f(U.uLodK, p.texPerCss, p.maxLod);
       gl.uniform1i(U.uNIp, f.nip); if (f.nip) { gl.uniform4fv(U.uIp, f.ip); gl.uniform1fv(U.uIpT, f.ipt); }
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < NTXT; i++) {
         const t = f.text[i];
         gl.uniform1f(U['uTOn' + i], t ? 1 : 0);
         if (!t) continue;
