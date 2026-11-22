@@ -1,0 +1,137 @@
+{
+  "note": "Real footage, one clip/photo per quote (js/q/<pic>.js with kind video|image). 31 quotes: his old 28 + 3 from quotes-r2 (20 Nov).",
+  "quotes": [
+    {
+      "pic": "starship-catch",
+      "text": "When something is important enough, you do it even if the odds are not in your favor.",
+      "author": "Elon Musk"
+    },
+    {
+      "pic": "macintosh-1984",
+      "text": "Everything around you that you call life was made up by people that were no smarter than you and you can change it, you can influence it, you can build your own things that other people can use.",
+      "author": "Steve Jobs"
+    },
+    {
+      "pic": "falcon-heavy-landing",
+      "text": "For my part, I will never give up and I mean never.",
+      "author": "Elon Musk"
+    },
+    {
+      "pic": "pg-live-future",
+      "text": "Live in the future, then build what's missing.",
+      "author": "Paul Graham"
+    },
+    {
+      "pic": "aot-sea",
+      "text": "…the people who push themselves into hell see a different hell from the rest of us. They also see something beyond that hell. Maybe it’s hope. Maybe it’s yet another hell. I don’t know which it is. The only people who do know… are the ones who keep moving forward",
+      "author": "Eren Yeager"
+    },
+    {
+      "pic": "roon-generalists",
+      "text": "experts are fake, smart generalists rule the world, everything is designed by people no smarter than you, and courage is in shorter supply than genius",
+      "author": "roon"
+    },
+    {
+      "pic": "visa-seconds",
+      "text": "there are more people in the world than seconds in your life",
+      "author": "visa"
+    },
+    {
+      "pic": "kierkegaard-regret",
+      "text": "Do it or don’t do it — you will regret both.",
+      "author": "Soren Kierkegaard"
+    },
+    {
+      "pic": "dijkstra-path",
+      "text": "Simplicity is prerequisite for reliability.",
+      "author": "Edsger Dijkstra"
+    },
+    {
+      "pic": "jung-friends",
+      "text": "No matter how isolated you are and how lonely you feel, if you do your work truly and conscientiously, unknown friends will come and seek you.",
+      "author": "Carl Jung"
+    },
+    {
+      "pic": "ye-night",
+      "text": "even if you are not ready for the day it cannot always be night",
+      "author": "ye"
+    },
+    {
+      "pic": "serenity",
+      "text": "Grant me the serenity to accept the things I cannot change, the courage to change the things I can, and the wisdom to know the difference."
+    },
+    {
+      "pic": "appearances",
+      "text": "It is unwise to judge people based on their appearances and your preconceptions."
+    },
+    {
+      "pic": "mistakes",
+      "text": "The chief trick to making good mistakes is not to hide them – especially not from yourself. Instead of turning away in denial when you make a mistake, you should become a connoisseur of your own mistakes, turning them over in your mind as if they were works of art, which in a way they are."
+    },
+    {
+      "pic": "luck",
+      "text": "the best way to increase my luck surface area is to keep doing and keep telling as much as possible. luck = doing x telling. and i can hope it will lead to moments of serendipity",
+      "own": true
+    },
+    {
+      "pic": "great-work",
+      "text": "work is gonna be a large part of my life with time, so the only way to be truly satisfied is to do what i believe is great work and the only way to do great work is to love what i do",
+      "author": "Steve Jobs"
+    },
+    {
+      "pic": "delusion",
+      "text": "the delusion is simply what enables you to try long enough for the delusion to start looking less delusional.",
+      "author": "thejaunt_"
+    },
+    {
+      "pic": "jobs-dots",
+      "text": "You can’t connect the dots looking forward; you can only connect them looking backwards. So you have to trust that the dots will somehow connect in your future.",
+      "author": "Steve Jobs"
+    },
+    {
+      "pic": "jobs-heart",
+      "text": "Have the courage to follow your heart and intuition. They somehow already know what you truly want to become.",
+      "author": "Steve Jobs"
+    },
+    {
+      "pic": "ye-dreams",
+      "text": "Now I could let these dream killers kill my self esteem, or use my arrogance as the steam to power my dreams.",
+      "author": "Ye"
+    },
+    {
+      "pic": "naval-internet",
+      "text": "What makes the Internet great is the autists and the obsessives.",
+      "author": "Naval Ravikant"
+    },
+    {
+      "pic": "thiel-courage",
+      "text": "Brilliant thinking is rare, but courage is in even shorter supply than genius.",
+      "author": "Peter Thiel"
+    },
+    {
+      "pic": "altman-bend",
+      "text": "A big secret is that you can bend the world to your will a surprising percentage of the time—most people don’t even try, and just accept that things are the way that they are.",
+      "author": "Sam Altman"
+    },
+    {
+      "pic": "karpathy-agency",
+      "text": "Agency > Intelligence. … Agency is significantly more powerful and significantly more scarce.",
+      "author": "Andrej Karpathy"
+    },
+    {
+      "pic": "jobs-hungry",
+      "text": "Stay hungry. Stay foolish.",
+      "author": "Steve Jobs"
+    },
+    {
+      "pic": "karlsson-levels",
+      "text": "There are deeper levels to most systems if you are willing to take them apart. … And then all of reality becomes something you can horse around with.",
+      "author": "Henrik Karlsson"
+    },
+    {
+      "pic": "visa-choose",
+      "text": "All problems are interpersonal problems, but we kind of get to choose which ones we want.",
+      "author": "visa"
+    }
+  ]
+}
